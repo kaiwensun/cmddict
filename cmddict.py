@@ -64,7 +64,7 @@ def main():
 		    try:
 				line = raw_input('> ')
 				lookup(line)
-		    except EOFError:
+		    except (EOFError,KeyboardInterrupt):
 		        break
 
 if __name__ == "__main__":
