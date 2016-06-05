@@ -1,4 +1,12 @@
 #--coding:utf-8--
+__author__ = "Kaiwen Sun"
+__copyright__ = "Copyright 2016, cmddict"
+__credits__ = ["Kaiwen Sun"]
+__license__ = "GPL"
+__version__ = "1.0.1"
+__maintainer__ = "Kaiwen Sun"
+__email__ = "myagent.receiver@gmail.com"
+
 import sys
 import urllib2
 import json
