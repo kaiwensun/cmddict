@@ -3,7 +3,7 @@ __author__ = "Kaiwen Sun"
 __copyright__ = "Copyright 2016, cmddict"
 __credits__ = ["Kaiwen Sun"]
 __license__ = "GPL"
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __maintainer__ = "Kaiwen Sun"
 __email__ = "myagent.receiver@gmail.com"
 
@@ -84,14 +84,16 @@ def main():
 			lookup(word)
 		else:
 			while True:
-			    try:
+				try:
 					line = raw_input('> ')
 					if len(line)==0:
 						continue
 					lookup(line)
-			    except (EOFError,KeyboardInterrupt):
-			        break
-	except Exception as e:
+				except (EOFError,KeyboardInterrupt):
+					break
+				except:
+					print u"你好，程序测试员！"
+	except:
 		print u"你好，程序测试员！"
 
 if __name__ == "__main__":
