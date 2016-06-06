@@ -70,7 +70,11 @@ def lookup(word):
 	if '&' in word and '=' in word and any(key in word for key in keylist):
 		print u"危险的查询"
 		return
-	reply = urllib2.urlopen("http://fanyi.youdao.com/openapi.do?keyfrom="+appname+"&key="+key+"&type=data&doctype=json&version=1.1&q="+word).read()
+	try:
+		reply = urllib2.urlopen("http://fanyi.youdao.com/openapi.do?keyfrom="+appname+"&key="+key+"&type=data&doctype=json&version=1.1&q="+word).read()
+	except:
+		print u"请检查网络连接"
+		return
 	if type(reply) is str and reply=='no query':
 		print u"无效的输入"
 		return
