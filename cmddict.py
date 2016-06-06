@@ -3,7 +3,7 @@ __author__ = "Kaiwen Sun"
 __copyright__ = "Copyright 2016, cmddict"
 __credits__ = ["Kaiwen Sun"]
 __license__ = "GPL"
-__version__ = "1.0.3"
+__version__ = "2.0.1"
 __maintainer__ = "Kaiwen Sun"
 __email__ = "myagent.receiver@gmail.com"
 
@@ -64,9 +64,6 @@ def display(word,dic):
 		print u"没有找到翻译"
 
 def lookup(word):
-	if not is_ascii(word):
-		print u"无法识别的英文"
-		return
 	if '&' in word and '=' in word and any(key in word for key in keylist):
 		print u"危险的查询"
 		return
@@ -92,6 +89,7 @@ def main():
 					line = raw_input('> ')
 					if len(line)==0:
 						continue
+					line = urllib2.quote(line.decode('mbcs').encode('utf8'))
 					lookup(line)
 				except (EOFError,KeyboardInterrupt):
 					break
