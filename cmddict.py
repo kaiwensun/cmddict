@@ -3,13 +3,15 @@ __author__ = "Kaiwen Sun"
 __copyright__ = "Copyright 2016, cmddict"
 __credits__ = ["Kaiwen Sun"]
 __license__ = "GPL"
-__version__ = "2.0.1"
+__version__ = "3.0.1"
 __maintainer__ = "Kaiwen Sun"
 __email__ = "myagent.receiver@gmail.com"
 
 import sys
 import urllib2
 import json
+import locale
+import re
 
 def is_ascii(s):
     return all(ord(c) < 128 for c in s)
@@ -17,6 +19,7 @@ def is_ascii(s):
 key = "884563952"
 word = ""
 appname = "cmddict"
+syscode = locale.getpreferredencoding()
 
 errCodes = {
 	0:u"正常",
@@ -36,6 +39,39 @@ keylist = [
 		"q"
 		]
 
+phonDict = {
+u'ʌ':u'Λ',	#c_u_p, l_u_ck
+#u'ɑ':u'a',	#_a_rm, f_a_ther
+u'æ':u'@',	#c_a_t, b_a_ck
+u'ə':u'3',	#_a_way, cin_e_m_a_
+u'ɜ':u'3',	#t_ur_n, l_ear_n
+u'ɪ':u'i',	#h_i_t, s_i_tting
+u'ɒ':u'o',	#h_o_t, r_o_ck
+u'ɔ':u'o',	#c_a_ll, f_ou_r
+u'ʊ':u'u',	#p_u_t, c_oul_d
+u'ʳ':u'(r)',
+u'ŋ':u'η',	#si_ng_, fi_n_ger
+u'ʃ':u'∫',	#_sh_e, cra_sh_
+#u'θ':u'th',	#_th_ink, bo_th_
+u'ð':u'犭',	#_th_is, mo_th_er
+u'ʒ':u'ろ',	#plea_s_ure, vi_si_on
+u'\u02d0':u':'
+}
+#The ASCII Phonetic Alphabet is from http://www.antimoon.com/how/pronunc-ascii.htm
+pattern = re.compile(r'\b(' + '|'.join(phonDict.keys()) + r')\b')
+
+def convertPhonetic(phonetic):
+	if sys.platform == "win32":
+		l = list(phonetic)
+		for i in xrange(len(l)):
+			if l[i] in phonDict:
+				l[i]=phonDict[l[i]]
+		#rtn = pattern.sub(lambda x: phonDict[x.group()], phonetic)
+		return ''.join(l)
+	else:
+		return phonetic
+	
+
 def display(word,dic):
 	found = False
 	errCode = dic["errorCode"]
@@ -44,11 +80,14 @@ def display(word,dic):
 		return
 	if "translation" not in dic or (len(dic["translation"])==1 and dic["translation"][0]==word):
 		pass
-	else:
+	elif "basic" not in dic or 'phonetic' not in dic['basic']:
 		for trans in dic["translation"]:
 			print trans
 			found = True
 
+	if "basic" in dic and "uk-phonetic" in dic["basic"]:
+		if "basic" in dic and "uk-phonetic" in dic["basic"]:
+			print '[',(convertPhonetic(dic["basic"]["uk-phonetic"])).encode(syscode,'replace'),']'
 	if "basic" in dic and "explains" in dic["basic"]:
 		for trans in dic["basic"]["explains"]:
 			print trans
@@ -87,14 +126,16 @@ def main():
 			while True:
 				try:
 					line = raw_input('> ')
+					if line=='exit':
+						break;
 					if len(line)==0:
 						continue
-					line = urllib2.quote(line.decode('mbcs').encode('utf8'))
+					line = urllib2.quote(line.decode(syscode,'replace').encode('utf8','replace'))
 					lookup(line)
 				except (EOFError,KeyboardInterrupt):
 					break
 				except:
-					print u"你好，程序测试员！"
+					print u"你好啊，程序测试员！"
 	except:
 		print u"你好，程序测试员！"
 
