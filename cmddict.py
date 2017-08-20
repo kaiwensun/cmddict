@@ -3,7 +3,7 @@ __author__ = "Kaiwen Sun"
 __copyright__ = "Copyright 2016, cmddict"
 __credits__ = ["Kaiwen Sun"]
 __license__ = "GPL"
-__version__ = "3.0.1"
+__version__ = "3.0.2"
 __maintainer__ = "Kaiwen Sun"
 __email__ = "myagent.receiver@gmail.com"
 
@@ -12,6 +12,7 @@ import urllib2
 import json
 import locale
 import re
+import os
 
 def is_ascii(s):
     return all(ord(c) < 128 for c in s)
@@ -61,7 +62,7 @@ u'\u02d0':u':'
 pattern = re.compile(r'\b(' + '|'.join(phonDict.keys()) + r')\b')
 
 def convertPhonetic(phonetic):
-	if sys.platform == "win32":
+	if os.name == 'nt':
 		l = list(phonetic)
 		for i in xrange(len(l)):
 			if l[i] in phonDict:
@@ -84,7 +85,6 @@ def display(word,dic):
 		for trans in dic["translation"]:
 			print trans
 			found = True
-
 	if "basic" in dic and "uk-phonetic" in dic["basic"]:
 		if "basic" in dic and "uk-phonetic" in dic["basic"]:
 			print '[',(convertPhonetic(dic["basic"]["uk-phonetic"])).encode(syscode,'replace'),']'
@@ -92,8 +92,6 @@ def display(word,dic):
 		for trans in dic["basic"]["explains"]:
 			print trans
 			found = True
-
-	
 	if "web" in dic and "key" in dic["web"] and "value" in dic["web"]:
 		print dic["web"]["key"]
 		for trans in dic["web"]["value"]:
@@ -117,6 +115,10 @@ def lookup(word):
 	dic = json.loads(reply)
 	display(word,dic)
 
+def clearScreen():
+	command = "cls" if os.name=="nt" else "clear"
+	os.system(command)
+
 def main():
 	try:
 		if len(sys.argv)>1:
@@ -128,6 +130,9 @@ def main():
 					line = raw_input('> ')
 					if line=='exit':
 						break;
+					if line=='clear' or line=='cls':
+						clearScreen()
+						continue
 					if len(line)==0:
 						continue
 					line = urllib2.quote(line.decode(syscode,'replace').encode('utf8','replace'))
