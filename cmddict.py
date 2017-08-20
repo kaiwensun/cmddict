@@ -71,7 +71,6 @@ def convertPhonetic(phonetic):
 		return ''.join(l)
 	else:
 		return phonetic
-	
 
 def display(word,dic):
 	found = False
